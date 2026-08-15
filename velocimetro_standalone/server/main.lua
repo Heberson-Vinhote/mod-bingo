@@ -5,11 +5,7 @@ local VehicleFuelCache = {}
 RegisterNetEvent('velocimetro:server:RequestFuel', function(plate)
     local src = source
     if not plate then return end
-<<<<<<< Updated upstream
 
-=======
-
->>>>>>> Stashed changes
     plate = string.match(plate, "^%s*(.-)%s*$") -- Trim whitespace
 
     if VehicleFuelCache[plate] then
@@ -40,11 +36,7 @@ end)
 RegisterNetEvent('velocimetro:server:UpdateFuel', function(plate, fuelLevel)
     if not plate or not fuelLevel then return end
     plate = string.match(plate, "^%s*(.-)%s*$")
-<<<<<<< Updated upstream
 
-=======
-
->>>>>>> Stashed changes
     VehicleFuelCache[plate] = fuelLevel
 
     if GetResourceState('oxmysql') == 'started' then
@@ -59,17 +51,10 @@ RegisterNetEvent('velocimetro:server:RefuelVehicle', function(plate)
     local src = source
     if not plate then return end
     plate = string.match(plate, "^%s*(.-)%s*$")
-<<<<<<< Updated upstream
 
     -- Busca o combustível atual no cache do servidor para evitar exploit do cliente
     local currentFuelServer = VehicleFuelCache[plate]
 
-=======
-
-    -- Busca o combustível atual no cache do servidor para evitar exploit do cliente
-    local currentFuelServer = VehicleFuelCache[plate]
-
->>>>>>> Stashed changes
     -- Se por acaso o servidor não tem no cache, tentamos buscar no banco ou definimos como max (fallback)
     if not currentFuelServer then
         if GetResourceState('oxmysql') == 'started' then
@@ -90,18 +75,13 @@ end)
 
 function ProcessRefuel(src, plate, currentFuelServer)
     local fuelNeeded = Config.MaxFuel - currentFuelServer
-<<<<<<< Updated upstream
 
-=======
-
->>>>>>> Stashed changes
     if fuelNeeded <= 1.0 then
         TriggerClientEvent('velocimetro:client:Notify', src, "O tanque já está cheio!")
         return
     end
 
     local cost = math.floor(fuelNeeded * Config.FuelPrice)
-<<<<<<< Updated upstream
 
     if cost <= 0 then return end -- Previne exploits de valores negativos
 
@@ -112,18 +92,6 @@ function ProcessRefuel(src, plate, currentFuelServer)
             exports.oxmysql:execute('UPDATE vehicle_fuel SET fuel_level = ? WHERE plate = ?', {Config.MaxFuel, plate})
         end
 
-=======
-
-    if cost <= 0 then return end -- Previne exploits de valores negativos
-
-    if Config.CobrarAbastecimento(src, cost) then
-        VehicleFuelCache[plate] = Config.MaxFuel
-
-        if GetResourceState('oxmysql') == 'started' then
-            exports.oxmysql:execute('UPDATE vehicle_fuel SET fuel_level = ? WHERE plate = ?', {Config.MaxFuel, plate})
-        end
-
->>>>>>> Stashed changes
         TriggerClientEvent('velocimetro:client:SyncFuel', -1, plate, Config.MaxFuel)
         TriggerClientEvent('velocimetro:client:Notify', src, "Veículo abastecido com sucesso por R$"..cost)
     else
