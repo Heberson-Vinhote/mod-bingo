@@ -8,12 +8,20 @@ Config = {}
 Config.MaxFuel = 100.0
 
 -- Multiplicador base de consumo de combustível. Aumente para gastar mais rápido.
+<<<<<<< Updated upstream
 Config.FuelConsumptionMultiplier = 0.5
+=======
+Config.FuelConsumptionMultiplier = 0.5
+>>>>>>> Stashed changes
 
 -- ==========================================
 -- Consumo de combustível por classe de veículo
 -- O consumo baseia-se na rotação do motor (RPM).
+<<<<<<< Updated upstream
 -- Classes do GTA V:
+=======
+-- Classes do GTA V:
+>>>>>>> Stashed changes
 -- 0-7,9-12 (Carros), 8 (Motos), 13 (Bicicletas), 14 (Barcos), 15 (Helicópteros), 16 (Aviões), etc.
 -- ==========================================
 Config.ClassFuelUsage = {
@@ -48,7 +56,11 @@ Config.DefaultFuelUsage = 1.0
 -- Postos de Gasolina (Refuel)
 -- ==========================================
 -- Preço do litro de combustível
+<<<<<<< Updated upstream
 Config.FuelPrice = 2
+=======
+Config.FuelPrice = 2
+>>>>>>> Stashed changes
 
 -- Comando para reabastecer quando estiver perto de um posto
 Config.RefuelCommand = "abastecer"
@@ -80,7 +92,11 @@ function Config.CobrarAbastecimento(jogadorID, valor)
     -- Exemplo QBCore:
     -- local Player = QBCore.Functions.GetPlayer(jogadorID)
     -- if Player.Functions.RemoveMoney('cash', valor, "fuel") then return true else return false end
+<<<<<<< Updated upstream
 
+=======
+
+>>>>>>> Stashed changes
     print(string.format("[Velocimetro] Cobrando %d do jogador %s pelo combustível.", valor, jogadorID))
     return true -- Standalone default para testes
 end

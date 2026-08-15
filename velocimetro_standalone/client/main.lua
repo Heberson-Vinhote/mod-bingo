@@ -33,7 +33,11 @@ local function GetGearString(veh, isBicycle)
     if isBicycle then return "-" end
     local gear = GetVehicleCurrentGear(veh)
     local speed = GetEntitySpeed(veh)
+<<<<<<< Updated upstream
 
+=======
+
+>>>>>>> Stashed changes
     if speed == 0 and gear == 0 then
         return "N"
     elseif gear == 0 and speed > 0 then
@@ -53,12 +57,21 @@ CreateThread(function()
              -- Opcional: Se quiser que mostre em heli/avião remova as verificações acima,
              -- mas o prompt pediu que funcione em tudo, então vamos apenas checar IsPedInAnyVehicle
         end
+<<<<<<< Updated upstream
 
         if IsPedInAnyVehicle(ped, false) then
             sleep = 50
 
             local veh = GetVehiclePedIsIn(ped, false)
 
+=======
+
+        if IsPedInAnyVehicle(ped, false) then
+            sleep = 50
+
+            local veh = GetVehiclePedIsIn(ped, false)
+
+>>>>>>> Stashed changes
             -- Lógica de entrada no veículo
             if veh ~= currentVehicle then
                 currentVehicle = veh
@@ -71,7 +84,11 @@ CreateThread(function()
                 inVehicle = true
                 ToggleUI(true)
             end
+<<<<<<< Updated upstream
 
+=======
+
+>>>>>>> Stashed changes
             -- Se for o motorista, processa a UI e o gasto de combustivel
             if GetPedInVehicleSeat(veh, -1) == ped then
                 -- Informações do Veículo
@@ -81,12 +98,20 @@ CreateThread(function()
                 local isBicycle = (class == 13)
                 local gear = GetGearString(veh, isBicycle)
                 local engineHealth = GetVehicleEngineHealth(veh)
+<<<<<<< Updated upstream
 
+=======
+
+>>>>>>> Stashed changes
                 -- Luzes
                 local _, lightsOn, highbeams = GetVehicleLightsState(veh)
                 local lightStatus = false
                 if lightsOn == 1 or highbeams == 1 then lightStatus = true end
+<<<<<<< Updated upstream
 
+=======
+
+>>>>>>> Stashed changes
                 -- Portas (simplificado: se alguma porta estiver aberta)
                 local doorsOpen = false
                 for i=0, 5 do
@@ -111,7 +136,11 @@ CreateThread(function()
                     engine = engineBad,
                     isBicycle = isBicycle
                 })
+<<<<<<< Updated upstream
 
+=======
+
+>>>>>>> Stashed changes
                 -- Consumo de combustível
                 if not isBicycle and GetIsVehicleEngineRunning(veh) then
                     local usageRate = Config.ClassFuelUsage[class] or Config.DefaultFuelUsage
@@ -120,7 +149,11 @@ CreateThread(function()
                         local fuelDrop = (rpm * usageRate * Config.FuelConsumptionMultiplier) / 100
                         currentFuel = currentFuel - fuelDrop
                         if currentFuel < 0.0 then currentFuel = 0.0 end
+<<<<<<< Updated upstream
 
+=======
+
+>>>>>>> Stashed changes
                         -- Desliga o motor se acabar a gasolina
                         if currentFuel <= 0.0 then
                             SetVehicleEngineOn(veh, false, true, true)
@@ -148,12 +181,20 @@ CreateThread(function()
             if inVehicle then
                 inVehicle = false
                 ToggleUI(false)
+<<<<<<< Updated upstream
 
+=======
+
+>>>>>>> Stashed changes
                 -- Salva no DB ao sair apenas se era o motorista (quem gasta o combustível)
                 if currentVehicle and vehiclePlate and GetPedInVehicleSeat(currentVehicle, -1) == ped then
                     TriggerServerEvent('velocimetro:server:UpdateFuel', vehiclePlate, currentFuel)
                 end
+<<<<<<< Updated upstream
 
+=======
+
+>>>>>>> Stashed changes
                 currentVehicle = nil
                 vehiclePlate = nil
             end
@@ -167,23 +208,39 @@ end)
 RegisterCommand(Config.RefuelCommand, function()
     local ped = PlayerPedId()
     local veh = GetVehiclePedIsIn(ped, false)
+<<<<<<< Updated upstream
 
+=======
+
+>>>>>>> Stashed changes
     if veh == 0 then
         -- Tenta pegar o veiculo mais proximo se estiver a pe
         veh = GetClosestVehicle(GetEntityCoords(ped), 3.0, 0, 71)
     end
+<<<<<<< Updated upstream
 
     if veh ~= 0 then
         local pCoords = GetEntityCoords(ped)
         local isNearStation = false
 
+=======
+
+    if veh ~= 0 then
+        local pCoords = GetEntityCoords(ped)
+        local isNearStation = false
+
+>>>>>>> Stashed changes
         for _, stationCoords in ipairs(Config.GasStations) do
             if #(pCoords - stationCoords) <= Config.RefuelDistance then
                 isNearStation = true
                 break
             end
         end
+<<<<<<< Updated upstream
 
+=======
+
+>>>>>>> Stashed changes
         if isNearStation then
             local plate = GetVehicleNumberPlateText(veh)
             if plate then

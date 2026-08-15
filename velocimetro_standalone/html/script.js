@@ -22,7 +22,11 @@ window.addEventListener('message', function(event) {
     if (data.action === "update") {
         // Velocidade
         speedValue.innerText = data.speed.toString().padStart(3, '0');
+<<<<<<< Updated upstream
 
+=======
+
+>>>>>>> Stashed changes
         // Marcha
         gearValue.innerText = data.gear;
 
@@ -34,10 +38,17 @@ window.addEventListener('message', function(event) {
             let fuelPercent = (data.fuel / data.maxFuel) * 100;
             if (fuelPercent < 0) fuelPercent = 0;
             if (fuelPercent > 100) fuelPercent = 100;
+<<<<<<< Updated upstream
 
             fuelProgress.style.width = fuelPercent + '%';
             fuelText.innerText = Math.round(fuelPercent) + '%';
 
+=======
+
+            fuelProgress.style.width = fuelPercent + '%';
+            fuelText.innerText = Math.round(fuelPercent) + '%';
+
+>>>>>>> Stashed changes
             // Muda cor se estiver na reserva
             if (fuelPercent < 20) {
                 fuelProgress.style.background = 'linear-gradient(90deg, #ff4757, #ff6b81)';
