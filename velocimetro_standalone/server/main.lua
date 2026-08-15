@@ -47,53 +47,53 @@ RegisterNetEvent('velocimetro:server:UpdateFuel', function(plate, fuelLevel)
 end)
 
 -- Sistema de Reabastecimento
-RegisterNetEvent('velocimetro:server:RefuelVehicle', function(plate)
+-- Novo Sistema de Reabastecimento Parcial/Total
+RegisterNetEvent('velocimetro:server:RefuelVehicleAmount', function(plate, requestedLiters)
     local src = source
-    if not plate then return end
+    if not plate or type(requestedLiters) ~= "number" then return end
     plate = string.match(plate, "^%s*(.-)%s*$")
 
-    -- Busca o combustível atual no cache do servidor para evitar exploit do cliente
     local currentFuelServer = VehicleFuelCache[plate]
 
-    -- Se por acaso o servidor não tem no cache, tentamos buscar no banco ou definimos como max (fallback)
     if not currentFuelServer then
         if GetResourceState('oxmysql') == 'started' then
             exports.oxmysql:scalar('SELECT fuel_level FROM vehicle_fuel WHERE plate = ?', {plate}, function(fuel)
                 if fuel then
-                    ProcessRefuel(src, plate, fuel)
+                    ProcessRefuelAmount(src, plate, fuel, requestedLiters)
                 else
                     TriggerClientEvent('velocimetro:client:Notify', src, "Veículo não registrado.")
                 end
             end)
         else
-            ProcessRefuel(src, plate, Config.MaxFuel) -- Fallback
+            TriggerClientEvent('velocimetro:client:Notify', src, "Erro: Banco de dados inativo.")
         end
     else
-        ProcessRefuel(src, plate, currentFuelServer)
+        ProcessRefuelAmount(src, plate, currentFuelServer, requestedLiters)
     end
 end)
 
-function ProcessRefuel(src, plate, currentFuelServer)
+function ProcessRefuelAmount(src, plate, currentFuelServer, requestedLiters)
     local fuelNeeded = Config.MaxFuel - currentFuelServer
 
-    if fuelNeeded <= 1.0 then
-        TriggerClientEvent('velocimetro:client:Notify', src, "O tanque já está cheio!")
-        return
+    -- Validação de segurança para garantir que não compre mais do que cabe
+    if requestedLiters > fuelNeeded then
+        requestedLiters = math.floor(fuelNeeded)
     end
 
-    local cost = math.floor(fuelNeeded * Config.FuelPrice)
+    if requestedLiters <= 0 then return end
 
-    if cost <= 0 then return end -- Previne exploits de valores negativos
+    local cost = requestedLiters * Config.FuelPrice
 
     if Config.CobrarAbastecimento(src, cost) then
-        VehicleFuelCache[plate] = Config.MaxFuel
+        local newFuelLevel = currentFuelServer + requestedLiters
+        VehicleFuelCache[plate] = newFuelLevel
 
         if GetResourceState('oxmysql') == 'started' then
-            exports.oxmysql:execute('UPDATE vehicle_fuel SET fuel_level = ? WHERE plate = ?', {Config.MaxFuel, plate})
+            exports.oxmysql:execute('UPDATE vehicle_fuel SET fuel_level = ? WHERE plate = ?', {newFuelLevel, plate})
         end
 
-        TriggerClientEvent('velocimetro:client:SyncFuel', -1, plate, Config.MaxFuel)
-        TriggerClientEvent('velocimetro:client:Notify', src, "Veículo abastecido com sucesso por R$"..cost)
+        TriggerClientEvent('velocimetro:client:SyncFuel', -1, plate, newFuelLevel)
+        TriggerClientEvent('velocimetro:client:Notify', src, string.format("Você comprou %d litros por R$%d.", requestedLiters, cost))
     else
         TriggerClientEvent('velocimetro:client:Notify', src, "Dinheiro insuficiente para abastecer.")
     end

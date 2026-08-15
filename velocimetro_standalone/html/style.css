@@ -148,3 +148,108 @@ body {
 #icon-doors.active { color: #ff4757; text-shadow: 0 0 8px rgba(255, 71, 87, 0.6); }
 #icon-engine.active { color: #ff4757; text-shadow: 0 0 8px rgba(255, 71, 87, 0.6); }
 #icon-lights.active { color: #1e90ff; text-shadow: 0 0 8px rgba(30, 144, 255, 0.6); }
+
+/* Refuel Modal */
+#refuel-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    background: rgba(15, 15, 20, 0.95);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    color: white;
+}
+
+.refuel-header h2 {
+    font-size: 24px;
+    font-weight: 900;
+    margin-bottom: 5px;
+    color: #ffa502;
+}
+
+.refuel-header p {
+    font-size: 14px;
+    color: #a0a0a0;
+}
+
+.refuel-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.refuel-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0,0,0,0.3);
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+#liters-display { color: #ffffff; }
+#price-display { color: #2ed573; }
+
+/* Custom Slider */
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.1);
+    outline: none;
+}
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ffa502;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255, 165, 2, 0.5);
+    transition: transform 0.1s;
+}
+.slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.refuel-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-cancel {
+    background: transparent;
+    color: #ff4757;
+    border: 1px solid #ff4757;
+}
+.btn-cancel:hover { background: rgba(255, 71, 87, 0.1); }
+
+.btn-confirm {
+    background: #2ed573;
+    color: white;
+}
+.btn-confirm:hover { background: #26de81; }

@@ -57,3 +57,58 @@ window.addEventListener('message', function(event) {
         else iconEngine.classList.remove('active');
     }
 });
+
+// Lógica do Modal de Reabastecimento
+const refuelContainer = document.getElementById('refuel-container');
+const fuelSlider = document.getElementById('fuel-slider');
+const litersDisplay = document.getElementById('liters-display');
+const priceDisplay = document.getElementById('price-display');
+const btnCancel = document.getElementById('btn-cancel');
+const btnConfirm = document.getElementById('btn-confirm');
+
+let currentPricePerLiter = 0;
+let currentPlate = "";
+
+window.addEventListener('message', function(event) {
+    const data = event.data;
+
+    if (data.action === "openRefuel") {
+        currentPricePerLiter = data.pricePerLiter;
+        currentPlate = data.plate;
+
+        // Define os limites do slider
+        const maxLiters = Math.floor(data.missingFuel);
+        fuelSlider.max = maxLiters;
+        fuelSlider.value = maxLiters;
+
+        updateRefuelDisplays();
+        refuelContainer.classList.remove('hidden');
+    }
+});
+
+function updateRefuelDisplays() {
+    const liters = parseInt(fuelSlider.value);
+    const price = liters * currentPricePerLiter;
+
+    litersDisplay.innerText = liters + " L";
+    priceDisplay.innerText = "R$ " + price;
+}
+
+fuelSlider.addEventListener('input', updateRefuelDisplays);
+
+function closeRefuelMenu() {
+    refuelContainer.classList.add('hidden');
+    fetch(`https://${GetParentResourceName()}/closeRefuel`, { method: 'POST' });
+}
+
+btnCancel.addEventListener('click', closeRefuelMenu);
+
+btnConfirm.addEventListener('click', () => {
+    const liters = parseInt(fuelSlider.value);
+    fetch(`https://${GetParentResourceName()}/confirmRefuel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ liters: liters, plate: currentPlate })
+    });
+    refuelContainer.classList.add('hidden');
+});

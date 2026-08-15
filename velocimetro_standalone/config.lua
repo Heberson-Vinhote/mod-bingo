@@ -53,6 +53,13 @@ Config.FuelPrice = 5
 -- Tecla de interação (Padrão 38 = E)
 Config.InteractKey = 38
 
+-- Blips no mapa
+Config.EnableBlips = true
+Config.BlipSprite = 361
+Config.BlipColor = 4
+Config.BlipScale = 0.8
+Config.BlipName = "Posto de Gasolina"
+
 -- Posições dos postos de gasolina (Exemplo de alguns postos)
 Config.GasStations = {
     vector3(265.0, -1261.0, 29.0),

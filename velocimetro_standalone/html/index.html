@@ -42,6 +42,28 @@
 
     </div>
 
+    <!-- Refuel Modal -->
+    <div id="refuel-container" class="hidden">
+        <div class="refuel-header">
+            <h2>Posto de Gasolina</h2>
+            <p>Selecione a quantidade de litros desejada.</p>
+        </div>
+
+        <div class="refuel-body">
+            <div class="refuel-info">
+                <span id="liters-display">0 L</span>
+                <span id="price-display">R$ 0</span>
+            </div>
+
+            <input type="range" id="fuel-slider" min="1" max="100" value="1" class="slider">
+        </div>
+
+        <div class="refuel-footer">
+            <button id="btn-cancel" class="btn btn-cancel">Cancelar</button>
+            <button id="btn-confirm" class="btn btn-confirm">Abastecer</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
