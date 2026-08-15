@@ -170,37 +170,57 @@ CreateThread(function()
     end
 end)
 
--- Comando para reabastecer
-RegisterCommand(Config.RefuelCommand, function()
-    local ped = PlayerPedId()
-    local veh = GetVehiclePedIsIn(ped, false)
-
-    if veh == 0 then
-        -- Tenta pegar o veiculo mais proximo se estiver a pe
-        veh = GetClosestVehicle(GetEntityCoords(ped), 3.0, 0, 71)
-    end
-
-    if veh ~= 0 then
+-- Lógica dos marcadores nos postos de gasolina
+CreateThread(function()
+    while true do
+        local sleep = 1000
+        local ped = PlayerPedId()
         local pCoords = GetEntityCoords(ped)
-        local isNearStation = false
 
         for _, stationCoords in ipairs(Config.GasStations) do
-            if #(pCoords - stationCoords) <= Config.RefuelDistance then
-                isNearStation = true
-                break
-            end
-        end
+            local dist = #(pCoords - stationCoords)
 
-        if isNearStation then
-            local plate = GetVehicleNumberPlateText(veh)
-            if plate then
-                plate = string.match(plate, "^%s*(.-)%s*$")
-                TriggerServerEvent('velocimetro:server:RefuelVehicle', plate)
+            if dist < 15.0 then
+                sleep = 0
+                -- Draw Marker on the ground
+                DrawMarker(1, stationCoords.x, stationCoords.y, stationCoords.z - 1.0,
+                           0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                           Config.RefuelDistance, Config.RefuelDistance, 0.5,
+                           255, 165, 0, 100, false, true, 2, false, nil, nil, false)
+
+                if dist <= Config.RefuelDistance then
+                    -- Display Text
+                    SetTextComponentFormat("STRING")
+                    AddTextComponentString("Pressione ~y~[E]~s~ para reabastecer")
+                    DisplayHelpTextFromStringLabel(0, 0, 1, -1)
+
+                    if IsControlJustPressed(0, Config.InteractKey) then
+                        local veh = GetVehiclePedIsIn(ped, false)
+
+                        -- Se o jogador está a pé, tenta achar o veículo mais próximo
+                        if veh == 0 then
+                            veh = GetClosestVehicle(pCoords.x, pCoords.y, pCoords.z, Config.RefuelDistance, 0, 71)
+                        end
+
+                        if veh ~= 0 then
+                            -- Força atualização do combustível no servidor antes de tentar abastecer
+                            -- Isto previne o desync quando o motorista tenta abastecer dentro do veículo
+                            if currentVehicle == veh and wasDriver then
+                                TriggerServerEvent('velocimetro:server:UpdateFuel', vehiclePlate, currentFuel)
+                            end
+
+                            local plate = GetVehicleNumberPlateText(veh)
+                            if plate then
+                                plate = string.match(plate, "^%s*(.-)%s*$")
+                                TriggerServerEvent('velocimetro:server:RefuelVehicle', plate)
+                            end
+                        else
+                            TriggerEvent('velocimetro:client:Notify', "Nenhum veículo próximo para abastecer.")
+                        end
+                    end
+                end
             end
-        else
-            TriggerEvent('velocimetro:client:Notify', "Você não está próximo a um posto de gasolina.")
         end
-    else
-        TriggerEvent('velocimetro:client:Notify', "Nenhum veículo próximo para abastecer.")
+        Wait(sleep)
     end
 end)

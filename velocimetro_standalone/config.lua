@@ -48,10 +48,10 @@ Config.DefaultFuelUsage = 1.0
 -- Postos de Gasolina (Refuel)
 -- ==========================================
 -- Preço do litro de combustível
-Config.FuelPrice = 2
+Config.FuelPrice = 5
 
--- Comando para reabastecer quando estiver perto de um posto
-Config.RefuelCommand = "abastecer"
+-- Tecla de interação (Padrão 38 = E)
+Config.InteractKey = 38
 
 -- Posições dos postos de gasolina (Exemplo de alguns postos)
 Config.GasStations = {
