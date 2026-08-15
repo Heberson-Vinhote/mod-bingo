@@ -1,7 +1,7 @@
 fx_version 'cerulean'
 game 'gta5'
 
-description 'Standalone Bingo Mod for FiveM'
+description 'Standalone Speedometer & Fuel Mod for FiveM'
 version '1.0.0'
 
 shared_script 'config.lua'

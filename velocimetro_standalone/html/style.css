@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+    user-select: none;
+}
+
+body {
+    background: transparent;
+    overflow: hidden;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#speedometer-container {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    width: 280px;
+    background: rgba(15, 15, 20, 0.85);
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.05);
+    backdrop-filter: blur(5px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: opacity 0.3s ease;
+}
+
+/* Speed e Marcha */
+.main-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+    padding-bottom: 10px;
+}
+
+.speed-box {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+}
+
+#speed-value {
+    font-size: 48px;
+    font-weight: 900;
+    font-style: italic;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255,255,255,0.3);
+    line-height: 1;
+}
+
+.speed-unit {
+    font-size: 14px;
+    font-weight: 700;
+    color: #a0a0a0;
+}
+
+.gear-box {
+    background: #ff4757;
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 10px rgba(255, 71, 87, 0.4);
+}
+
+#gear-value {
+    font-size: 20px;
+    font-weight: 900;
+    color: white;
+}
+
+/* Status e Combustível */
+.status-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.fuel-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.fuel-icon {
+    color: #ffa502;
+    font-size: 14px;
+}
+
+.fuel-progress-bg {
+    flex: 1;
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.fuel-progress-fill {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #ffa502, #ff7f50);
+    border-radius: 4px;
+    transition: width 0.3s ease, background 0.3s ease;
+}
+
+#fuel-text {
+    font-size: 12px;
+    font-weight: 700;
+    color: #ffffff;
+    width: 35px;
+    text-align: right;
+}
+
+/* Ícones */
+.icons-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: rgba(0,0,0,0.3);
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.status-icon {
+    font-size: 16px;
+    color: rgba(255,255,255,0.2);
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.status-icon.active {
+    color: #2ed573;
+    text-shadow: 0 0 8px rgba(46, 213, 115, 0.6);
+}
+
+/* Cores específicas de alerta */
+#icon-doors.active { color: #ff4757; text-shadow: 0 0 8px rgba(255, 71, 87, 0.6); }
+#icon-engine.active { color: #ff4757; text-shadow: 0 0 8px rgba(255, 71, 87, 0.6); }
+#icon-lights.active { color: #1e90ff; text-shadow: 0 0 8px rgba(30, 144, 255, 0.6); }

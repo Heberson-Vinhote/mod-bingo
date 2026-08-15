@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velocímetro Standalone</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Ícones FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="speedometer-container" class="hidden">
+
+        <div class="main-info">
+            <div class="speed-box">
+                <span id="speed-value">000</span>
+                <span class="speed-unit">KM/H</span>
+            </div>
+
+            <div class="gear-box">
+                <span id="gear-value">N</span>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <!-- Barra de combustível -->
+            <div class="fuel-container">
+                <i class="fa-solid fa-gas-pump fuel-icon"></i>
+                <div class="fuel-progress-bg">
+                    <div id="fuel-progress" class="fuel-progress-fill"></div>
+                </div>
+                <span id="fuel-text">100%</span>
+            </div>
+
+            <!-- Ícones de Status -->
+            <div class="icons-container">
+                <i id="icon-lights" class="fa-solid fa-lightbulb status-icon"></i>
+                <i id="icon-doors" class="fa-solid fa-door-open status-icon"></i>
+                <i id="icon-engine" class="fa-solid fa-triangle-exclamation status-icon"></i>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
