@@ -170,6 +170,17 @@ CreateThread(function()
     end
 end)
 
+
+local gasPumpModels = {
+    GetHashKey("prop_gas_pump_1d"),
+    GetHashKey("prop_gas_pump_1a"),
+    GetHashKey("prop_gas_pump_1b"),
+    GetHashKey("prop_gas_pump_1c"),
+    GetHashKey("prop_vintage_pump"),
+    GetHashKey("prop_gas_pump_old2"),
+    GetHashKey("prop_gas_pump_old3")
+}
+
 -- Criação de Blips no Mapa
 CreateThread(function()
     if Config.EnableBlips then
@@ -189,7 +200,7 @@ end)
 
 local isRefuelMenuOpen = false
 
--- Lógica dos marcadores nos postos de gasolina
+-- Lógica dos marcadores nos postos de gasolina baseada em Objetos
 CreateThread(function()
     while true do
         local sleep = 1000
@@ -197,66 +208,67 @@ CreateThread(function()
         local pCoords = GetEntityCoords(ped)
 
         if not isRefuelMenuOpen then
-            for _, stationCoords in ipairs(Config.GasStations) do
-                local dist = #(pCoords - stationCoords)
+            local pumpFound = false
+            local pumpCoords = nil
 
-                if dist < 15.0 then
-                    sleep = 0
-                    -- Draw Marker on the ground
-                    DrawMarker(1, stationCoords.x, stationCoords.y, stationCoords.z - 1.0,
-                               0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                               Config.RefuelDistance, Config.RefuelDistance, 0.5,
-                               255, 165, 0, 100, false, true, 2, false, nil, nil, false)
+            for _, pumpHash in ipairs(gasPumpModels) do
+                local pump = GetClosestObjectOfType(pCoords.x, pCoords.y, pCoords.z, 3.0, pumpHash, false, false, false)
+                if pump ~= 0 then
+                    pumpFound = true
+                    pumpCoords = GetEntityCoords(pump)
+                    break
+                end
+            end
 
-                    if dist <= Config.RefuelDistance then
-                        -- Display Text
-                        SetTextComponentFormat("STRING")
-                        AddTextComponentString("Pressione ~y~[E]~s~ para reabastecer")
-                        DisplayHelpTextFromStringLabel(0, 0, 1, -1)
+            if pumpFound and pumpCoords then
+                sleep = 0
 
-                        if IsControlJustPressed(0, Config.InteractKey) then
-                            local veh = GetVehiclePedIsIn(ped, false)
+                -- Display Text
+                SetTextComponentFormat("STRING")
+                AddTextComponentString("Pressione ~y~[E]~s~ para reabastecer")
+                DisplayHelpTextFromStringLabel(0, 0, 1, -1)
 
-                            -- Se o jogador está a pé, tenta achar o veículo mais próximo
-                            if veh == 0 then
-                                veh = GetClosestVehicle(pCoords.x, pCoords.y, pCoords.z, Config.RefuelDistance, 0, 71)
+                if IsControlJustPressed(0, Config.InteractKey) then
+                    local veh = GetVehiclePedIsIn(ped, false)
+
+                    -- Se o jogador está a pé, tenta achar o veículo mais próximo
+                    if veh == 0 then
+                        veh = GetClosestVehicle(pCoords.x, pCoords.y, pCoords.z, 5.0, 0, 71)
+                    end
+
+                    if veh ~= 0 then
+                        -- Força atualização do combustível no servidor antes de tentar abastecer
+                        -- Isto previne o desync quando o motorista tenta abastecer dentro do veículo
+                        if currentVehicle == veh and wasDriver then
+                            TriggerServerEvent('velocimetro:server:UpdateFuel', vehiclePlate, currentFuel)
+                        end
+
+                        local plate = GetVehicleNumberPlateText(veh)
+                        if plate then
+                            plate = string.match(plate, "^%s*(.-)%s*$")
+                            local vehicleCurrentFuel = currentFuel
+                            if currentVehicle ~= veh then
+                                -- Se tentou abastecer outro carro que não está usando, pega a gasolina da entity
+                                vehicleCurrentFuel = GetVehicleFuelLevel(veh)
                             end
 
-                            if veh ~= 0 then
-                                -- Força atualização do combustível no servidor antes de tentar abastecer
-                                -- Isto previne o desync quando o motorista tenta abastecer dentro do veículo
-                                if currentVehicle == veh and wasDriver then
-                                    TriggerServerEvent('velocimetro:server:UpdateFuel', vehiclePlate, currentFuel)
-                                end
+                            local missingFuel = Config.MaxFuel - vehicleCurrentFuel
 
-                                local plate = GetVehicleNumberPlateText(veh)
-                                if plate then
-                                    plate = string.match(plate, "^%s*(.-)%s*$")
-                                    local vehicleCurrentFuel = currentFuel
-                                    if currentVehicle ~= veh then
-                                        -- Se tentou abastecer outro carro que não está usando, pega a gasolina da entity
-                                        vehicleCurrentFuel = GetVehicleFuelLevel(veh)
-                                    end
-
-                                    local missingFuel = Config.MaxFuel - vehicleCurrentFuel
-
-                                    if missingFuel > 1.0 then
-                                        isRefuelMenuOpen = true
-                                        SetNuiFocus(true, true)
-                                        SendNUIMessage({
-                                            action = "openRefuel",
-                                            missingFuel = missingFuel,
-                                            pricePerLiter = Config.FuelPrice,
-                                            plate = plate
-                                        })
-                                    else
-                                        TriggerEvent('velocimetro:client:Notify', "O tanque já está cheio!")
-                                    end
-                                end
+                            if missingFuel > 1.0 then
+                                isRefuelMenuOpen = true
+                                SetNuiFocus(true, true)
+                                SendNUIMessage({
+                                    action = "openRefuel",
+                                    missingFuel = missingFuel,
+                                    pricePerLiter = Config.FuelPrice,
+                                    plate = plate
+                                })
                             else
-                                TriggerEvent('velocimetro:client:Notify', "Nenhum veículo próximo para abastecer.")
+                                TriggerEvent('velocimetro:client:Notify', "O tanque já está cheio!")
                             end
                         end
+                    else
+                        TriggerEvent('velocimetro:client:Notify', "Nenhum veículo próximo para abastecer.")
                     end
                 end
             end
